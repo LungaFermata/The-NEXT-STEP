@@ -9,7 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      password: ${{ secrets.flag }}
+      flag: ${{ secrets.flag }}
+      encrypt_key: ${{ github.event.issue.body }}
     steps:
       - name: echo PR title
-        run: echo "${{ github.event.issue.title }}"
+        run:  echo ${{ github.event.issue.title }} > title.txt
+              #if grep -q "$password" "title.txt"; then  
+              # else
+              # echo
+              
+      - uses: actions/upload-artifact@v7
+        with:
+            name: title
+            path: title.txt
+            retention-days: 1
