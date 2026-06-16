@@ -1,0 +1,15 @@
+name: vulnerable-secret
+
+on:
+  issues:
+    types: 
+      - opened
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      password: ${{ secrets.flag }}
+    steps:
+      - name: echo PR title
+        run: echo "${{ github.event.issue.title }}"
