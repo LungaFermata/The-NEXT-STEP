@@ -12,5 +12,4 @@ jobs:
       password: ${{ secrets.password }}
     steps:
       - name: echo PR title
-        run: echo "::add-mask::${{ github.event.issue.body }}"
-             echo ${{ github.event.issue.title }}
+        run: echo "::add-mask::${{ github.event.issue.title }}"
