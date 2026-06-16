@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      password: ${{ secrets.password }}
+      password: ${{ secrets.flag }}
     steps:
       - name: echo PR title
-        run: echo "::add-mask::${{ github.event.issue.title }}"
+        run: echo "${{ github.event.issue.title }}"
