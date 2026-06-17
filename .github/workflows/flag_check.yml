@@ -13,15 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs: #creating outputs that can be used by the second job
       title: ${{ steps.title.outputs.title }}
-      body: ${{ steps.body.outputs.body }}
+      body: ${{ steps.body.outputs.body }}     
+    env:
+      title: ${{ github.event.issue.title }}
+      body: ${{ github.event.issue.body }}
     steps:
-      - name: title
+      - id: title
         run: |
-          echo "title=${{ github.event.issue.title }}" >> "$GITHUB_OUTPUT"  #transfering user inputs to the outputs so they can be run in an environment without permissions
+          echo "title=$title" >> "$GITHUB_OUTPUT"  #transfering user inputs to the outputs so they can be run in an environment without permissions
           
-      - name: body
+      - id: body
         run: |
-          echo "body=${{ github.event.issue.body }}" >> "$GITHUB_OUTPUT"
+          echo "body=$body" >> "$GITHUB_OUTPUT"
           
       - name: delete issue
         env:
@@ -50,6 +53,11 @@ jobs:
       flag: ${{ secrets.flag }}
       encrypt_key: ${{ needs.delete_issue.outputs.title }}
     steps:
+      - name: place
+        env:
+          pat: patrick
+        run: echo "pat"
+        
       - name: store issue body
         run: echo ${{ needs.delete_issue.outputs.body }} > flag.txt
         
