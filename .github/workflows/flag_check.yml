@@ -25,7 +25,7 @@ jobs:
           
       - name: delete issue
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.pat }}
           ISSUE_ID: ${{ github.event.issue.node_id }}
         run: |
           gh api graphql \
