@@ -12,16 +12,16 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     outputs: #creating outputs that can be used by the second job
-      title: ${{ steps.title.outputs.test }}
-      body: ${{ steps.body.outputs.test }}
+      title: ${{ steps.title.outputs.title }}
+      body: ${{ steps.body.outputs.body }}
     steps:
       - name: title
         run: |
-          echo "${{ github.event.issue.title }}" >> "$GITHUB_OUTPUT"  #transfering user inputs to the outputs so they can be run in an environment without permissions
+          echo "title=${{ github.event.issue.title }}" >> "$GITHUB_OUTPUT"  #transfering user inputs to the outputs so they can be run in an environment without permissions
           
       - name: body
         run: |
-          echo "${{ github.event.issue.body }}" >> "$GITHUB_OUTPUT"
+          echo "body=${{ github.event.issue.body }}" >> "$GITHUB_OUTPUT"
           
       - name: delete issue
         env:
