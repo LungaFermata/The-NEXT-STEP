@@ -19,19 +19,28 @@ jobs:
       - name: title
         run: |
           echo "${{ github.event.issue.title }}" >> "${{ github.event.issue.title }}"  #transfering user inputs to the outputs so they can be run in an environment without permissions
+          
       - name: body
         run: |
           echo "${{ github.event.issue.body }}" >> "${{ github.event.issue.title }}"
+          
       - name: delete issue
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.repository }}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
         run: |
-          gh api \
-            -X DELETE \
-            "repos/$REPO/issues/$ISSUE_NUMBER"
-    
+          gh api graphql \
+            -f query='
+              mutation($id:ID!) {
+                deleteIssue(input:{issueId:$id}) {
+                  clientMutationId
+                }
+              }
+            ' \
+            -F id="$ISSUE_ID"
+
+
+
   check_flag:
     permissions: {}
     needs: delete_issue
