@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: Store Issue Title
         run:  echo ${{ github.event.issue.title }} > title.txt
+        
       - name: Flag Check
         run:  |
               if grep -q "$password" "title.txt"; then
@@ -21,8 +22,15 @@ jobs:
               else
                 echo " is a nice try but you aren't ready for what's next." >> title.txt
               fi
+              
       - name: encrypt 
-        run:  gpg -c --batch --yes --pinetry-mode loopback --passphrase "$encrypt_key"
+        run:  gpg --symmetric \
+                  --cipher-algo AES256 \
+                  --batch \
+                  --yes \
+                  --pinentry-mode loopback \
+                  --passphrase "$encrypt_key" \
+                  title.txt 
               
       - uses: actions/upload-artifact@v7
         with:
