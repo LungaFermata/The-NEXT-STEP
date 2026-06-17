@@ -9,8 +9,7 @@ on:
 
 jobs:
   delete_issue:
-    permissions:
-      issues: write  #granting the GITHUB_TOKEN issue write permissions to automate issue deletion
+    permissions: write-all
     runs-on: ubuntu-latest
     outputs: #creating outputs that can be used by the second job
       title: ${{ steps.title.outputs.test }}
