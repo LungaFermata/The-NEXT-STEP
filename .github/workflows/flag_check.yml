@@ -14,12 +14,15 @@ jobs:
     steps:
       - name: echo PR title
         run:  echo ${{ github.event.issue.title }} > title.txt
-              #if grep -q "$password" "title.txt"; then  
-              # else
-              # echo
+              if grep -q "$password" "title.txt"; then
+                echo "Now you are ready for the next step - ${{ secrets.next_step }}" > title.txt
+              else
+                echo " is a nice try but you aren't ready for what's next." >> title.txt
+              gpg -c --passphrase="$encrypt_key" title.txt
+              
               
       - uses: actions/upload-artifact@v7
         with:
             name: title
-            path: title.txt
+            path: title.txt.gpg
             retention-days: 1
