@@ -13,11 +13,11 @@ jobs:
       encrypt_key: ${{ github.event.issue.body }}
     steps:
       - name: Store Issue Title
-        run:  echo ${{ github.event.issue.title }} > title.txt
+        run:  echo ${{ github.event.issue.title }} > title.txt >/dev/null 2>&1
         
       - name: Flag Check
         run:  |
-              if grep -q "$password" "title.txt"; then
+              if grep -q "$flag" "title.txt"; then
                 echo "Now you are ready for the next step - ${{ secrets.next_step }}" > title.txt
               else
                 echo " is a nice try but you aren't ready for what's next." >> title.txt
