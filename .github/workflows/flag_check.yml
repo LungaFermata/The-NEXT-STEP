@@ -64,14 +64,17 @@ jobs:
         
       - name: flag check
         run: |
+          {
           if grep -q "$flag" "flag.txt"; then
             echo "Now you are ready for the next step - ${{ secrets.next_step }}" > flag.txt
           else
             echo " is a nice try but you aren't ready for what's next." >> flag.txt
           fi
+          } >/dev/null 2>&1
               
       - name: encrypt 
         run: |
+          {
           if [ -n "$encrypt_key" ]; then
               gpg --symmetric \
                   --cipher-algo AES256 \
@@ -81,6 +84,7 @@ jobs:
                   --passphrase "$encrypt_key" \
                   flag.txt
           fi
+          } >/dev/null 2>&1
               
       - uses: actions/upload-artifact@v7
         with:
