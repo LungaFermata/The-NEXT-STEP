@@ -25,7 +25,7 @@ jobs:
               
       - name: encrypt 
         run:  |
-              if [[ ! -z "${param// }" ]]; then
+              if [[ ! -z "${$encrypt_key// }" ]]; then
                 gpg --symmetric \
                     --cipher-algo AES256 \
                     --batch \
