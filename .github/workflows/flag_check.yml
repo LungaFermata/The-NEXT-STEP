@@ -55,17 +55,10 @@ jobs:
     permissions: {}
     needs: delete_issue
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:24.04
     env:
       flag: ${{ secrets.flag }}
       encrypt_key: ${{ needs.delete_issue.outputs.title }}
     steps:
-      - name: install dependencies
-        run: |
-          apt-get update
-          apt-get install -y gnupg grep
-          
       - name: place
         env:
           pat: patrick
