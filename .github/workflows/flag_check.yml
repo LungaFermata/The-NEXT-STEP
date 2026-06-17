@@ -22,7 +22,7 @@ jobs:
                 echo " is a nice try but you aren't ready for what's next." >> title.txt
               fi
       - name: encrypt 
-        run:  gpg -c <<< $encrypt_key
+        run:  gpg -c --batch --yes --pinetry-mode loopback --passphrase "$encrypt_key"
               
       - uses: actions/upload-artifact@v7
         with:
