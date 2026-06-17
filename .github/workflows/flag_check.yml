@@ -1,4 +1,4 @@
-name: vulnerable-secret
+name: flag_check
 
 run-name: "${{ github.actor }} flag check"
 
@@ -11,7 +11,7 @@ jobs:
   delete_issue:
     permissions: write-all
     runs-on: ubuntu-latest
-    outputs: #creating outputs that can be used by the second job
+    outputs: 
       title: ${{ steps.title.outputs.title }}
       body: ${{ steps.body.outputs.body }}     
     env:
@@ -21,7 +21,7 @@ jobs:
       - id: title
         run: |
           {
-            echo 'title<<EOF'  #transfering user inputs to the outputs so they can be run in an environment without permissions
+            echo 'title<<EOF'
             printf '%s\n' "$title"
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
@@ -59,11 +59,6 @@ jobs:
       flag: ${{ secrets.flag }}
       encrypt_key: ${{ needs.delete_issue.outputs.title }}
     steps:
-      - name: place
-        env:
-          pat: patrick
-        run: echo "pat"
-        
       - name: store issue body
         run: echo ${{ needs.delete_issue.outputs.body }} > flag.txt
         
@@ -87,7 +82,7 @@ jobs:
                   flag.txt
           fi
               
-      - uses: actions/upload-artifact@v7 #upload a compressed version of the encrypted file to the workflow run entry (find the entries at https://github.com/LungaFermata/Pecan/actions)
+      - uses: actions/upload-artifact@v7
         with:
           name: flag
           path: flag.txt.gpg
