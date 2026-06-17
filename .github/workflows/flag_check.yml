@@ -20,11 +20,19 @@ jobs:
     steps:
       - id: title
         run: |
-          echo "title=$title" >> "$GITHUB_OUTPUT"  #transfering user inputs to the outputs so they can be run in an environment without permissions
+          {
+            echo 'title<<EOF'  #transfering user inputs to the outputs so they can be run in an environment without permissions
+            printf '%s\n' "$title"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
           
       - id: body
         run: |
-          echo "body=$body" >> "$GITHUB_OUTPUT"
+          {
+            echo 'body<<EOF'
+            printf '%s\n' "$body"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
           
       - name: delete issue
         env:
@@ -47,10 +55,18 @@ jobs:
     permissions: {}
     needs: delete_issue
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:24.04
+      options: --user 1000:1000
     env:
       flag: ${{ secrets.flag }}
       encrypt_key: ${{ needs.delete_issue.outputs.title }}
     steps:
+      - name: install dependencies
+        run: |
+          apt-get update
+          apt-get install -y gnupg grep
+          
       - name: place
         env:
           pat: patrick
@@ -61,7 +77,7 @@ jobs:
         
       - name: flag check
         run: |
-          if grep -q "$flag" "title.txt"; then
+          if grep -q "$flag" "flag.txt"; then
             echo "Now you are ready for the next step - ${{ secrets.next_step }}" > flag.txt
           else
             echo " is a nice try but you aren't ready for what's next." >> flag.txt
