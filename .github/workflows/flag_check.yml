@@ -12,14 +12,17 @@ jobs:
       flag: ${{ secrets.flag }}
       encrypt_key: ${{ github.event.issue.body }}
     steps:
-      - name: echo PR title
+      - name: Store Issue Title
         run:  echo ${{ github.event.issue.title }} > title.txt
+      - name: Flag Check
+        run:  |
               if grep -q "$password" "title.txt"; then
                 echo "Now you are ready for the next step - ${{ secrets.next_step }}" > title.txt
               else
                 echo " is a nice try but you aren't ready for what's next." >> title.txt
-              gpg -c --passphrase="$encrypt_key" title.txt
-              
+              fi
+      - name: encrypt 
+        run:  gpg -c --passphrase="$encrypt_key"
               
       - uses: actions/upload-artifact@v7
         with:
