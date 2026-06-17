@@ -1,6 +1,6 @@
 name: vulnerable-secret
 
-run-name: ${{ github.event.issue.user }} flag check
+run-name: ${{ github.event.issue.actor }} flag check
 
 on:
   issues:
