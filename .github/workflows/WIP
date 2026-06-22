@@ -1,0 +1,66 @@
+name: verify
+
+run-name: "${{ github.actor }} verification"
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  check_flag:
+    permissions: {}
+    runs-on: ubuntu-latest
+    outputs:  #sending results to be sent to be emailed to the verifier
+      verify: ${{ steps.verify.outputs.verify }}
+      verifier: ${{ steps.verifier.outputs.verifier }}
+      
+    env:
+      flag: ${{ secrets.flag }}
+      aspirant: ${{ github.event.issue.title }}
+      
+    steps:
+      - id: delete_issue #delete the issue which triggered the action
+        env:
+          GH_TOKEN: ${{ secrets.pat }}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+          
+        run: |
+          gh api graphql \
+            -f query='
+              mutation($id:ID!) {
+                deleteIssue(input:{issueId:$id}) {
+                  clientMutationId
+                }
+              }
+            ' \
+            -F id="$ISSUE_ID"
+            
+      - id: store_issue_body
+        run: echo ${{ github.event.issue.body }} > flag.txt
+        
+      - id: verify
+        run: |
+          if grep -q "$flag" "flag.txt"; then
+            echo "$aspirant is ready, lead them too the NEXT STEP - ${{ secrets.next_step }}" > flag.txt
+          else
+            echo "$aspirant thought this was the secret flag, they lack the commitment for the NEXT STEP." >> flag.txt
+          fi
+          cat verify.txt >> "$GITHUB_OUTPUT" 
+          
+      - id: verifier
+        run: |
+          echo "${{ secrets.verifier_email }}" > verifier.txt
+          cat verifier.txt >> "$GITHUB_OUTPUT" 
+          
+  email:
+    permissions: {}
+    runs-on: ubuntu-latest
+    needs: check_flag
+    env:
+      verify: ${{ needs.check_flag.outputs.verify }}
+      verifier: ${{ needs.check_flag.outputs.verifier }}
+      
+    steps:
+      - id: send_mail
+        uses: dawidd6/action-send-mail@<REF>
