@@ -2,7 +2,7 @@ name: verify
 
 run-name: "${{ github.actor }} verification"
 
-on:
+##on:
   issues:
     types:
       - opened
